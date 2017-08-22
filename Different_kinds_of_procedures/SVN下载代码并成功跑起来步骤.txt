@@ -1,0 +1,34 @@
+1、到Q盘，右键SVN Checkout
+
+URL of repository填：http://code.eng.flcnc.com/svn/uc-ui/trunk
+Checkout directory填  一个Q盘的文件夹
+Checkout Depth选 Fully recursive
+Revision 选 HEAD revision
+
+点OK后登录，就可以下载代码了
+
+2、双击 configure.py，填3再填1，等待程序运行完成
+
+3、双击 all-vs2010.sln，先点击这个solution，rebuild solution，再把roller下的某工程设为Startup Project，
+点roller右键rebuild
+
+4、把以前的bin文件夹中，现在没有的文件夹拷过来，现在的bin中应该只有tests等少数文件夹，要把config、
+firmware等文件夹拷过来
+
+5、把现在的bin文件夹下刚生成的几个dll文件复制粘贴到plugins文件夹中，替换它们
+
+6、把src\roller\parameter文件夹中的roller.cfg2复制到bin\config\en中，替换原有文件
+                                   roller_zh.cfg2复制到bin\config\zh中，改名为roller.cfg2替换原有文件
+
+7、此时应该已经可以正常运行了，但是要检查一下在zmotion.dll是否正确
+   一个可以用的配置是  essentials\bin\zmotion.dll用2014/5/7的
+                       zdevelop\bin\zmotion.dll用2014/2/20的
+                       zdevelop\develop\bin\zmotion.dll用2014/5/7的
+
+8、最后再检查一下加密狗有没有装驱动，有没有插上
+   zsimu.exe有没有打开
+   另外检查一下bin\config\roller,ini中的3021项IP对不对
+
+9、如果要仿真的话，把simulator拷到当前工程文件夹下
+
+10、还要绑定一下轴卡  进入主界面——设置——加密——管理

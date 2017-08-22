@@ -1,0 +1,10 @@
+1、用Opera浏览器登录   gitlab.eng.flcnc.com
+2、找到要clone的项目   把项目的git链接复制下来   例如 http://bochen@gitlab.eng.flcnc.com/miaochengyu/uc-ui.git
+3、到Q盘Git Bash,      git clone http://bochen@gitlab.eng.flcnc.com/miaochengyu/uc-ui.git
+4、到Q盘的uc-ui文件夹(刚刚clone的文件夹),  
+     git checkout master
+     git branch -a 查看所有分支
+     git checkout version2.1-hangzhou到想去的分支
+5、用git branch再查看一下是否已经切换好了
+6、双击configure.py，依次输入3 1
+7、py程序结束后，打开sln文件，把RollerLoader设为startup project，编译RollerLoader这个项目

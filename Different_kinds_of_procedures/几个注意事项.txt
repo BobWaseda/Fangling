@@ -1,0 +1,7 @@
+1、新编译代码后，要把 /bin/Roller.exe 或 /bin/Rollerd.exe 复制粘贴到  /bin/plugins文件夹中
+
+2、把希望仿真的图片存到 /bin/simulator 文件夹中，把对应的配置放到 /bin/config文件夹中
+
+3、出现  “相机初始化失败”或“轴卡初始化失败”时，如果是想看仿真结果，
+/bin/config/roller.ini文件中的3021项改为127.0.0.1（该项 表示IP地址，127.0.0.1 表示本机）
+                              9100项改为CameraSim（该项 表示相机类型，CameraSim表示仿真相机）
