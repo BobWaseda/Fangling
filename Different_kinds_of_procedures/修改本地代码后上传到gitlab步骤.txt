@@ -1,0 +1,13 @@
+1、git status    检查一下哪些文件修改了
+2、看看其中的  untracked files  中的文件有没有应该删的
+3、把该删的删了之后再次  git status   查看一下状态
+4、git add .     —————把所有修改的文件提交
+5、git status    这时应该所有的文件都变成了绿色
+6、git commit -m "一些想说的内容"    
+7、git push origin 本地分支的名字:远程分支的名字
+   例如   git push origin version2.1-hangzhou:version2.1-hangzhou
+   
+
+
+本地文件---------->本地缓存区 ----------> 本地缓存区 ----------> 远程仓库
+        git add              git commit             git push
