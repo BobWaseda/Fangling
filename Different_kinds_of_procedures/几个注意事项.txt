@@ -1,4 +1,4 @@
-1、新编译代码后，要把 /bin/Roller.exe 或 /bin/Rollerd.exe 复制粘贴到  /bin/plugins文件夹中
+1、新编译代码后，要把 /bin/Roller.dll 或 /bin/Rollerd.dll 复制粘贴到  /bin/plugins文件夹中
 
 2、把希望仿真的图片存到 /bin/simulator 文件夹中，把对应的配置放到 /bin/config文件夹中
 
