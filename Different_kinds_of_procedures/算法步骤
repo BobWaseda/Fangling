@@ -19,8 +19,43 @@
 8、关于旋转的思路：
 把有效区域转成mat，调用opencv的旋转函数，再把mat转为status，原始坐标变换一下，在新的图上重新下落
 
-坐标变换：
+坐标变换：（横坐标为col，纵坐标为row）
 
-原始图中，圆形参考点坐标  (x0, y0)     (x0:col, yo:row)
+原始图中，原点是最左下角的点，各圆形参考点坐标  (x0, y0)     
 
-1° 原始图 ——> 不旋转只切割核心区域的图
+1° 原始图 ——> 不旋转只切割核心区域的图中，原点是切割后的核心区域中最左下角的点，圆形参考点坐标 (x1, y1)
+     设切割后的核心区域共 Rows 行， Cols列
+         x1 = x0 - ( (first_true_w_ + last_true_w_)/2 - Cols/2 );
+         y1 = y0 - ( (first_true_h_ + last_true_h_)/2 - Rows/2 );
+
+2° 不旋转只切割核心区域的图中，原点是切割后的核心区域中的中心点，圆形参考点坐标 (x2, y2)
+         x2 = x1 - Cols/2 = x0 - (first_true_w_ + last_true_w_)/2;
+         y2 = y1 - Rows/2 = y0 - (first_true_h_ + last_true_h_)/2;
+   
+   各圆形圆心坐标 (x3,y3)
+         x3 = x2 + space.width_/2 = x0 - (first_true_w_ + last_true_w_)/2 + space.width_/2;
+         y3 = y2 + space.width_/2 = y0 - (first_true_h_ + last_true_h_)/2 + space.width_/2;
+         
+3°切割后的核心区域 旋转角度为 θ，旋转中心是 核心区域中心点， 原点是核心区域中心点， 旋转后 各圆形 圆心坐标(x4,y4)
+         x4 =  x3 * cosθ + y3 * sinθ
+         y4 = -x3 * sinθ + y3 * cosθ
+
+4°各圆形 参考点坐标 (x5, y5)
+         x5 = x4 - space.width_/2 
+            = x3 * cosθ + y3 * sinθ - space.width_/2
+            = ( x0 - (first_true_w_ + last_true_w_)/2 + space.width_/2 ) * cosθ 
+            + ( y0 - (first_true_h_ + last_true_h_)/2 + space.width_/2 ) * sinθ 
+            - space.width_/2;
+            
+         y5 = y4 - space.width_/2 
+            = -x3 * sinθ + y3 * cosθ - space.width_/2
+            = ( -x0 + (first_true_w_ + last_true_w_)/2 - space.width_/2 ) * sinθ 
+            + ( y0 - (first_true_h_ + last_true_h_)/2 + space.width_/2 ) * cosθ
+            - space.width_/2;
+            
+    接下来对所有的 (x5,y5) 按照x5排序(x5大的排在前面），
+然后把所有的进行分层：
+    首先取第一个圆的col坐标，循环终止条件是 当前圆col坐标小于第一个圆的col坐标+圆的直径，如果当前圆的row坐标小于第一个圆的row坐标 - 圆的直径 或
+当前圆的row坐标大于第一个圆的row坐标 + 圆的直径，把当前圆加入改层，用一个vector<pair>存该层圆的row范围（在已有的该层圆的[-diameter,diameter]范围
+内为不符合）
+这样所有圆分好层后，用之前的套路下落移动
