@@ -48,3 +48,92 @@ if ( contours[0][i].x != bounding_rect.tl().x
   ImageAssistTool::ArrayIntToMat(new_status, new_status_mat);
 
   cv::drawContours(new_status_mat, new_contours, 0, cv::Scalar(255), -1);
+
+  
+  cv::imwrite("he1.png", new_status_mat);
+
+  cv::drawContours(new_status_mat, new_contours,
+                   0, cv::Scalar(0), 1);
+  
+  cv::imwrite("he2.png", new_status_mat);
+
+  std::vector< std::vector<cv::Point> >().swap(contours);
+  std::vector<cv::Vec4i>().swap(hierarchy);
+  
+  cv::findContours(new_status_mat, contours, hierarchy,
+                   cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+
+  new_contours[0].insert(new_contours[0].end(),contours[0].begin(), contours[0].end());
+
+  cv::Mat outlineMat = cv::Mat::zeros(bounding_rect.height,
+                                      bounding_rect.width,CV_32FC1);
+
+  cv::drawContours(outlineMat, new_contours,
+                   0, cv::Scalar(255), 1);
+  
+}
+
+void ConnectionNester::SpeedupPaintWithoutCheck(int reference_column,
+                                                int reference_row,image::Array<int> &status) {
+
+  for (size_t i = 0; i < connection_nester_space_img_.outline_points_.size();i++) {
+
+    int bi = connection_nester_space_img_.outline_points_[i].y_;
+    int bj = connection_nester_space_img_.outline_points_[i].x_;
+    
+    if (bi + reference_row < (int)status.RowSize()
+     && bj + reference_column < (int)status.ColSize()
+     && bi + reference_row >=0
+     && bj + reference_column >=0 ) {
+      
+      status[bi + reference_row][bj + reference_column] = 2;
+    }
+  }
+}
+
+
+void ConnectionNester::SpeedupRemoveFromStatusWithoutCheck(int reference_column,
+                                                           int reference_row,image::Array<int> &status) {
+
+  for (size_t i = 0; i < connection_nester_space_img_.outline_points_.size();
+       i++) {
+
+    int bi = connection_nester_space_img_.outline_points_[i].y_;
+    int bj = connection_nester_space_img_.outline_points_[i].x_;
+if (bi + reference_row < (int)status.RowSize()
+     && bj + reference_column < (int)status.ColSize()
+     && bi + reference_row >=0
+     && bj + reference_column >=0 ) {status[bi + reference_row][bj + reference_column] = 1;
+    }
+  }
+}
+
+void ImageAssistTool::ArrayIntToMat(const image::Array<int> &src, cv::Mat &dst) {
+  size_t height =  src.RowSize();
+  size_t width = src.ColSize();
+  
+  dst = cv::Mat(height, width, CV_8U);
+
+  for (size_t i = 0; i < height; ++i) {
+    for (size_t j = 0; j < width; ++j) {
+      dst.at<uchar>(i, j) = src[i][j] == 1 ? 255 : 0;
+    }
+  }
+}
+
+void ImageAssistTool::MatToArrayInt(const cv::Mat &src, image::Array<int> &dst) {
+  int width = src.cols;
+  int height = src.rows;
+  cv::Mat img = src.clone();
+  if (src.channels() == 3) {
+    cv::cvtColor(img, img, CV_BGR2GRAY);
+  }
+  
+  cv::threshold(img, img, 200, 255, CV_THRESH_BINARY);
+  dst = image::Array<int>(height, width, 0);
+  for (int i = 0; i < height; ++i) {
+    for (int j = 0; j < width; ++j) {
+      dst[i][j] = src.at<uchar>(i, j) > 0 ? 1 : 0;
+    }
+  }
+}
