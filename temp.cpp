@@ -137,3 +137,78 @@ void ImageAssistTool::MatToArrayInt(const cv::Mat &src, image::Array<int> &dst) 
     }
   }
 }
+
+
+template <class T>
+class ArrayElement {
+ public:
+  ArrayElement() {}
+  ArrayElement(int column, const T &t) : element_(column, t) {
+    assert(column >= 0);
+  }
+
+  T &operator [] (int pos) {
+    if (!(pos >= 0 && pos < (int)element_.size())) {
+      assert(false);
+    }
+    
+    assert(pos >= 0 && pos < (int)element_.size());
+    return element_[pos];
+  }
+  
+  const T &operator [] (int pos) const {
+    assert(pos >= 0 && pos < (int)element_.size());
+    return element_[pos];
+  }
+  
+  bool IsEmpty() const {
+    return element_.empty();
+  }
+  
+  std::size_t Size() const {
+    return element_.size();
+  }
+  
+  private:
+  std::vector<T> element_;
+
+};
+
+template <class T>
+class Array {
+ public:
+  Array() {}
+  Array(int row, int column, const T &t) : rows_(row, ArrayElement<T>(column, t)) {
+    assert(row >= 0);
+    assert(column >= 0);
+  }
+  
+  ArrayElement<T> &operator [] (int pos) {
+    assert(pos >= 0 && pos < (int)rows_.size());
+    return rows_[pos];
+  }
+  
+  const ArrayElement<T> &operator [] (int pos) const {
+    assert(pos >= 0 && pos < (int)rows_.size());
+    return rows_[pos];
+  }
+  
+  bool IsEmpty() const {
+    return rows_.empty();
+  }
+  
+  std::size_t RowSize() const {
+    return rows_.size();
+  }
+  
+  std::size_t ColSize() const {
+    if (rows_.empty()) {
+      return 0;
+    }
+    return rows_[0].Size();
+  }
+  
+  private:
+  std::vector<ArrayElement<T> > rows_;
+
+};
