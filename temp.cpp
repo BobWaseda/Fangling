@@ -212,3 +212,36 @@ class Array {
   std::vector<ArrayElement<T> > rows_;
 
 };
+
+void ConnectionNester::InitializationForRoughlyNesting() {
+
+  int status_row_size = (int)space_img_.status_.RowSize();
+  if ( status_row_size % 2 == 0) {
+    row_gap_ = status_row_size;
+    row_gap_between_cols_ = status_row_size/2;
+  }else {
+    row_gap_ = status_row_size + 1;
+    row_gap_between_cols_ = (status_row_size + 1)/2;
+  }
+  
+  image::Array<int> status_for_template(
+              row_gap_ * 2, row_gap_*2, 1);
+
+  //first space_image
+  SpeedupPaintWithoutCheck(0, 0, status_for_template);
+  //second space_image
+  SpeedupPaintWithoutCheck(0, row_gap_, status_for_template);
+  //third space_image
+  std::vector<image::Point<int> > temp_result;
+  for ( int col = 0; col < status_row_size * 2; col++ ) {
+    if ( CheckClcResultForGravitySimulation(
+               col, row_gap_between_cols_,  status_for_template,
+                          temp_result, 2,0, status_row_size * 2 - 1, 0, status_row_size * 2 - 1) ) {
+
+        col_gap_ = col;
+        break;
+            }
+  }
+
+  return;
+}
